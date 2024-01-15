@@ -1,15 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager instance = null;
-    public static GameManager Instance
-    {
-        get { return instance; }
-    }
+    public static GameManager instance = null;
 
     void Awake()
     {
@@ -21,8 +18,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     int lives = 3;
@@ -31,8 +26,8 @@ public class GameManager : MonoBehaviour
     GameObject clonePaddle;
 
     public Text livesText;
-    public Text gameOverText;
-    public Text youWinText;
+    public GameObject gameOverText;
+    public GameObject youWinText;
     public GameObject bricksPrefab;
     public GameObject paddleBall;
     public GameObject deathParticles;
@@ -43,8 +38,41 @@ public class GameManager : MonoBehaviour
         Instantiate(bricksPrefab, transform.position, transform.rotation);
     }
 
-    void Update()
+    public void LoseLife()
     {
-        
+        lives--;
+        livesText.text = "Lives : " + lives;
+        Instantiate(deathParticles, clonePaddle.transform.position, Quaternion.identity);
+        Destroy(clonePaddle);
+        Invoke("SetupPaddle", resetDelay);
+
+        if(lives < 1)
+        {
+            gameOverText.SetActive(true);
+            Time.timeScale = 0.2f;
+            Invoke("Reset", resetDelay);
+        }
+    }
+
+    public void DestroyBricks()
+    {
+        bricks--;
+        if(bricks < 1)
+        {
+            youWinText.SetActive(true);
+            Time.timeScale = 0.2f;
+            Invoke("Reset", resetDelay);
+        }
+    }
+
+    void SetupPaddle()
+    {
+        clonePaddle = Instantiate(paddleBall, transform.position, Quaternion.identity) as GameObject;
+    }
+
+    void Reset()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
     }
 }

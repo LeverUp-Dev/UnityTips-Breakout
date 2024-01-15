@@ -12,12 +12,14 @@ public class Ball : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        transform.GetComponent<SphereCollider>().enabled = true;
     }
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            transform.parent = null;
             rb.AddForce(ballSpeed, ballSpeed, 0);
         }
     }

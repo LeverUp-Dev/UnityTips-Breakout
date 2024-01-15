@@ -10,7 +10,8 @@ public class Bricks : MonoBehaviour
     {
         Instantiate(brickParticle, transform.position, Quaternion.identity);
 
-        if(collision.gameObject.tag == "Ball")
-            Destroy(gameObject);
+        Destroy(gameObject);
+
+        GameManager.instance.DestroyBricks();
     }
 }
